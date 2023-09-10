@@ -22,11 +22,11 @@ A simple full-stack MERN app for travelers to share the places they visited
  - REACT_APP_GOOGLE_API_KEY= your google maps api key
 
 ### 6 add a nodemon.json file in backend folder with following datas
-    "MONGO_USER": "username of mongodb",
+   {"env":{ "MONGO_USER": "username of mongodb",
     "MONGO_PASSWORD": "mongodb cluster password",
     "MONGO_DB": "database name",
-    "JWT_KEY":"a random unique code for json web token"
-
+    "JWT_KEY":"a random unique code for json web token"}
+}
 ### 7 start both front end and backend
   - redirect to both files and type the command  npm start
 
