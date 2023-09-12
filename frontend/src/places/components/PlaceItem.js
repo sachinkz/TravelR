@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
@@ -15,6 +15,29 @@ const PlaceItem = props => {
   const auth = useContext(AuthContext);
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+   const [coordinates, setCoordinates] = useState([])
+
+   useEffect(() => {
+     const makeCoordinates = async () => {
+       fetch(
+         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+           props.address
+         )}.json?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`
+       )
+         .then((response) => {
+           if (!response.ok) {
+             throw new Error("failed to fetch place")
+           }
+           return response.json()
+         })
+         .then((data) => {
+           const coords = data.features[0].geometry.coordinates
+           setCoordinates(coords)
+         })
+     }
+
+     makeCoordinates()
+   }, [])
 
   const openMapHandler = () => setShowMap(true);
 
@@ -43,6 +66,7 @@ const PlaceItem = props => {
     } catch (err) {}
   };
 
+
   return (
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
@@ -55,7 +79,7 @@ const PlaceItem = props => {
         footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
       >
         <div className="map-container">
-          <Map center={props.coordinates} zoom={16} />
+          <Map coordinates={coordinates} address={props.address} center={props.coordinates} zoom={16} />
         </div>
       </Modal>
       <Modal

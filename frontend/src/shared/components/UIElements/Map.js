@@ -1,28 +1,35 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from "react"
+import mapboxgl from "mapbox-gl/dist/mapbox-gl"
 
-import './Map.css';
+import "./Map.css"
 
-const Map = props => {
-  const mapRef = useRef();
-  
-  const { center, zoom } = props;
+const Map = (props) => {
+
+ console.log(props.coordinates)
 
   useEffect(() => {
-    const map = new window.google.maps.Map(mapRef.current, {
-      center: center,
-      zoom: zoom
-    });
-  
-    new window.google.maps.Marker({ position: center, map: map });
-  }, [center, zoom]);  
+    const latitude = props.coordinates[0]
+    const longitude = props.coordinates[1]
 
+    mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
+    var map = new mapboxgl.Map({
+      container: "mapbox",
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [latitude, longitude],
+      zoom: 14,
+    })
+
+    new mapboxgl.Marker().setLngLat([latitude, longitude]).addTo(map)
+  },[props.coordinates])
+
+  
   return (
     <div
-      ref={mapRef}
+      id="mapbox"
       className={`map ${props.className}`}
       style={props.style}
     ></div>
-  );
-};
+  )
+}
 
-export default Map;
+export default Map
